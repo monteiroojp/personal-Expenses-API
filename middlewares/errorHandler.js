@@ -9,7 +9,7 @@ const errorHandler = (error, req, res, next) => {
     }
 
 
-    return res.status(customError.statusCode).json(customError.msg)
+    return res.status(customError.statusCode).send(customError.msg)
 }
 
 //Export

@@ -1,7 +1,8 @@
 //Import errors
 const {BadRequest, Unauthorized} = require('../errors/index')
 
-//Import util modules
+//Import utils
+const query = require('../utils/querySQL')
 const jwt = require('jsonwebtoken')
 
 //Auth jwt middleware
@@ -16,7 +17,8 @@ const authJwt = async (req, res, next) => {
     
     try {
         const payLoad = await jwt.verify(token, process.env.JWT_SECRET)
-        req.user = payLoad
+        const user = await query('SELECT * FROM users WHERE user_id=?', [payLoad.userId])
+        req.user = user
         next()
     } catch (error) {
         next(error)

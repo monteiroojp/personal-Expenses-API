@@ -9,7 +9,8 @@ const express = require('express')
 const app = express()
 
 //Import routes
-
+const userRoute = require('./routes/userRoute.js')
+const expenseRoute = require('./routes/expenseRoute.js')
 
 //Extract data from requests
 app.use(express.json())
@@ -28,7 +29,8 @@ const xss = require('xss-clean')
 const rateLimiter = require('express-rate-limit')
 
 //Routes
-
+app.use('/api/v1/auth', userRoute)
+app.use('/api/v1/expenses', authToken, expenseRoute)
 
 //Middlewares import
 const errorHandler = require('./middlewares/errorHandler.js')
@@ -55,7 +57,7 @@ const connectDB = require('./db/connectDB.js')
 const start = async () => {
   try {
     await connectDB()
-
+    await require('./models/index.js')
     app.listen(port, () => console.log(`The server is running on port ${port}`))
   } catch (error) {
     console.log(`There was some error while starting the API, ${error}`)
