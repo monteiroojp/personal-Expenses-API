@@ -50,7 +50,7 @@ app.use(errorHandler)
 app.use(notFound)
 
 //Start setup
-const port = process.env.PORT || 3000;
+const port = process.env.PORT_SERVER || 3000;
 const connectDB = require('./db/connectDB.js')
 
 const start = async () => {
