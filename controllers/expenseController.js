@@ -4,7 +4,8 @@ const {StatusCodes} = require('http-status-codes')
 const {BadRequest, CustomError, NotFound, Unauthorized} = require('../errors/index')
 const validateFilds = require('../utils/validateFields')
 const addUpdateFilds = require('../utils/addUpdateFilds')
-
+const addQueryParams = require('../utils/addQueryParams')
+const adddSortParams = require('../utils/addSortParams')
 
 //Controllers
 const createExpense = async (req, res) => {
@@ -18,6 +19,29 @@ const createExpense = async (req, res) => {
     )
         
     res.status(StatusCodes.CREATED).json({newExpense: {id: expense.insertId, title: title, amount: amount, description: description, date: date, category: category, createdBy: createdBy}})
+}
+
+const getAllExpenses = async (req, res) => {
+    let SQL = 'SELECT * FROM expenses'
+    let params = []
+    const {querySQL, queryParams} = await addQueryParams(req)
+    
+    if(queryParams.length > 0){
+        SQL += ' WHERE ' + querySQL.join(' AND ')
+        params.push(...queryParams)
+    }
+
+    const sortSQL = adddSortParams(req)
+    SQL += sortSQL
+
+    const limit = Number(req.query.limit) || 10
+    const page = Number(req.query.pages) || 1
+    const offset = (page -1) * limit
+    SQL += ` LIMIT ?, ?`
+    params.push(offset, limit)
+
+    const expense = await query(SQL, params)
+    res.status(StatusCodes.OK).send(expense)
 }
 
 const getExpense = async (req, res) => {
@@ -88,6 +112,7 @@ const deleteExpense = async(req, res) => {
 //Export
 module.exports = {
     createExpense,
+    getAllExpenses,
     getExpense,
     updateExpense,
     deleteExpense,

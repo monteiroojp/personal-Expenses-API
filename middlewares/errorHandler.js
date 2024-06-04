@@ -8,6 +8,10 @@ const errorHandler = (error, req, res, next) => {
         msg: error.message || `Something went wrong, try again later`
     }
 
+    if (error.code === 'ER_DUP_ENTRY'){
+        customError.statusCode = 400,
+        customError.msg = 'This email already belongs to another user'
+    }
 
     return res.status(customError.statusCode).send(customError.msg)
 }
