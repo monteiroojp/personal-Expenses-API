@@ -8,9 +8,23 @@ require('dotenv').config()
 const express = require('express')
 const app = express()
 
-//Import routes
-const userRoute = require('./routes/userRoute.js')
-const expenseRoute = require('./routes/expenseRoute.js')
+//Extra securites import
+const helmet = require('helmet')
+const cors = require('cors')
+const xss = require('xss-clean')
+const rateLimiter = require('express-rate-limit')
+
+//Security Middlewares
+app.use(helmet())
+app.use(cors({
+  origin: process.env.CORS_ORIGIN,
+  optionsSuccessStatus: 200
+}))
+app.use(xss())
+app.use(rateLimiter({
+  windowMs: 15 * 60 * 1000,
+  max: 100
+}))
 
 //Extract data from requests
 app.use(express.json())
@@ -19,14 +33,9 @@ app.use(express.urlencoded({extended: true}))
 //Routes middleware
 const authToken = require('./middlewares/authToken.js')
 
-//Publics
-
-
-//Extra securites import
-const helmet = require('helmet')
-const cors = require('cors')
-const xss = require('xss-clean')
-const rateLimiter = require('express-rate-limit')
+//Import routes
+const userRoute = require('./routes/userRoute.js')
+const expenseRoute = require('./routes/expenseRoute.js')
 
 //Routes
 app.use('/api/v1/auth', userRoute)
@@ -39,16 +48,6 @@ const notFound = require('./middlewares/notFound.js')
 //Middlewares
 app.use(errorHandler)
 app.use(notFound)
-
-//Security 
-app.set('trust proxy', 1)
-app.use(helmet())
-app.use(cors())
-app.use(xss())
-app.use(rateLimiter({
-  windowMs: 15 * 60 * 1000,
-  max: 100
-}))
 
 //Start setup
 const port = process.env.PORT || 3000;
