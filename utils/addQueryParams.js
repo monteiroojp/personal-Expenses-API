@@ -25,8 +25,6 @@ const addQueryParams = async (req) => {
      }
 
     const result = {querySQL, queryParams}
-    console.log(result)
-
     return result
 }
 
