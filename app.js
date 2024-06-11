@@ -34,12 +34,14 @@ app.use(express.urlencoded({extended: true}))
 const authToken = require('./middlewares/authToken.js')
 
 //Import routes
-const userRoute = require('./routes/userRoute.js')
+const userAuthRoute = require('./routes/userAuthRoute.js')
 const expenseRoute = require('./routes/expenseRoute.js')
+const userProfileRoute = require('./routes/userProfileRoute.js')
 
 //Routes
-app.use('/api/v1/auth', userRoute)
+app.use('/api/v1/auth', userAuthRoute)
 app.use('/api/v1/expenses', authToken, expenseRoute)
+app.use('/api/v1/users', authToken, userProfileRoute)
 
 //Middlewares import
 const errorHandler = require('./middlewares/errorHandler.js')

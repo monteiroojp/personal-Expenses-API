@@ -13,6 +13,8 @@ const errorHandler = (error, req, res, next) => {
         customError.msg = 'This email already belongs to another user'
     }
 
+    console.log(error)
+
     return res.status(customError.statusCode).json({error: customError.msg})
 }
 
