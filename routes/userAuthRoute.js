@@ -11,7 +11,7 @@ const authToken = require('../middlewares/authToken')
 
 //Routes
 router.route('/register').post(registerUser)
-router.route('/login', authToken).post(loginUser)
+router.route('/login').post(loginUser)
 router.get('/adminToken', authToken, getAdminToken)
 
 //Export

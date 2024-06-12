@@ -1,7 +1,6 @@
 //Import utils
 const multer = require('multer')
 const path = require('path')
-console.log(__dirname)
 
 //Define file storage
 const storage = multer.diskStorage({
