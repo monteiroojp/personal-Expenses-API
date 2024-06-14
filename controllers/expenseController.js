@@ -60,6 +60,26 @@ const getExpense = async (req, res) => {
     res.status(StatusCodes.OK).json({expense})
 }
 
+const getAmountPerCategory = async (req, res) => {
+    const createdBy = req.user[0].user_id
+    const expense = await query(
+        'SELECT sum(amount) AS total, category FROM expenses WHERE createdBy=? GROUP BY category',
+        [createdBy]
+    )
+
+    res.status(StatusCodes.OK).json({expense})
+}
+
+const getAmountPerDay = async (req, res) => {
+    const createdBy = req.user[0].user_id
+    const expense = await query(
+        'SELECT SUM(amount) AS total, DATE(date) AS date  FROM expenses    WHERE createdBy =?   AND date >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH) AND date < CURDATE() GROUP BY DATE(date) ORDER BY DATE(date)',
+        [createdBy]
+    )
+
+    res.status(StatusCodes.OK).json(expense)
+}
+
 const updateExpense = async (req, res) => {
     const id = Number(req.params.id)
     const createdBy = req.user[0].user_id
@@ -116,5 +136,6 @@ module.exports = {
     getExpense,
     updateExpense,
     deleteExpense,
-    
+    getAmountPerCategory,
+    getAmountPerDay
 }
